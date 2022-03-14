@@ -22,6 +22,16 @@ class Course(Enum):
     POOLESVILLE = 21176
     RATTLEWOOD = 21175
 
+    def __str__(self):
+        return self.name
+
+    @staticmethod
+    def from_string(s):
+        try:
+            return Course[s]
+        except KeyError:
+            raise ValueError()
+
 # Set up browser service
 def launch():
     service = Service(ChromeDriverManager().install())
@@ -35,9 +45,15 @@ def launch():
 def get_args():
     
     parser = argparse.ArgumentParser(description='Snag a tee time')
+
+    # Required
     parser.add_argument('-u', type=str, required=True)
     parser.add_argument('-p', type=str, required=True)
+    parser.add_argument('-course', type=Course.from_string, choices=list(Course), required=True)
     parser.add_argument('-count', type=int, required=True)
+
+    # Optional
+    parser.add_argument('--checkout', action='store_true')
 
     return parser.parse_args()
 
@@ -54,7 +70,7 @@ base_url += str(date.today() + timedelta(days=7))
 
 # Add the course id
 base_url += '&course_id='
-base_url += str(Course.NEEDWOOD.value)
+base_url += str(args.course.value)
 
 # Set to 18 holes
 base_url += '&nb_holes=18'
@@ -92,3 +108,6 @@ time.sleep(5)
 
 # Check the review terms
 driver.find_element(by=By.TAG_NAME, value='reservation-review-terms').find_element(by=By.XPATH, value="//input[@type='checkbox']").click()
+
+if args.checkout:
+    driver.find_element(by=By.TAG_NAME, value='reservation-review-submit-button').find_element(by=By.XPATH, value="//input[@type='submit']").click()
