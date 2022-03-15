@@ -10,6 +10,7 @@ import argparse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
 class Course(Enum):
@@ -35,6 +36,10 @@ class Course(Enum):
 # Set up browser service
 def launch():
     service = Service(ChromeDriverManager().install())
+
+    chrome_options = Options()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--headless')
 
     # Initiate the browser
     driver = webdriver.Chrome(service = service)
