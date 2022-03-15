@@ -27,3 +27,9 @@ Add crontab to file on a new line
 List crontab: `crontab -l`
 
 Remove all cron jobs: `crontab -r`
+
+# Script
+
+To run the script, copy the script from `example-script.sh` into another directory, like `~/Scripts/` for example. Store it in a file called `tee-times.sh`
+
+Run `chmod +x tee-times.sh` to make your script executable.
