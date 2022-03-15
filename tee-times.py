@@ -85,11 +85,19 @@ for x in range(count):
 
     base_url += '85113'
 
+print('Going to url: ' + base_url)
+
 driver.get(base_url)
 time.sleep(5)
 
-driver.find_element(by=By.CLASS_NAME, value='widget-teetime-rate').click()
+print('Selecting earliest tee time...')
+
+element = driver.find_element(by=By.CLASS_NAME, value='widget-teetime-rate')
+
+element.click()
 time.sleep(5)
+
+print('Clicking button to log in...')
 
 driver.find_element(by=By.CLASS_NAME, value='fl-button').click()
 time.sleep(5)
@@ -103,11 +111,18 @@ driver.find_element(by=By.ID, value='sessionPassword').send_keys(login_password)
 
 time.sleep(5)
 
+print('Logging in with provided credentials...')
+
 driver.find_element(by=By.XPATH, value="//input[@type='submit']").click()
 time.sleep(5)
+
+print('Agreeing to terms >:)')
 
 # Check the review terms
 driver.find_element(by=By.TAG_NAME, value='reservation-review-terms').find_element(by=By.XPATH, value="//input[@type='checkbox']").click()
 
 if args.checkout:
+    print('Checking out...')
     driver.find_element(by=By.TAG_NAME, value='reservation-review-submit-button').find_element(by=By.XPATH, value="//input[@type='submit']").click()
+else:
+    print('Skipping checkout...')
