@@ -42,7 +42,7 @@ def launch():
     chrome_options.add_argument('--headless')
 
     # Initiate the browser
-    driver = webdriver.Chrome(service = service)
+    driver = webdriver.Chrome(service = service, chrome_options=chrome_options)
 
     return driver 
 
