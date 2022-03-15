@@ -43,7 +43,7 @@ def launch():
     # Initiate the browser
     driver = webdriver.Chrome(service = service, chrome_options=chrome_options)
 
-    # Always wait 5 seconds
+    # Always wait 5 seconds if needed
     driver.implicitly_wait(5)
 
     return driver 
@@ -65,14 +65,16 @@ def get_args():
 
     return parser.parse_args()
 
+# Read the args from the cmd line
 args = get_args()
 
+# Launch the browser
 driver = launch()
 
-# Open the Website
+# Base url
 base_url = 'https://www.chronogolf.com/club/18159/widget?medium=widget&source=club'
 
-# Set 7 days from now
+# Look forward args.adv amount of days
 base_url += '#?date='
 base_url += str(date.today() + timedelta(days=args.adv))
 
@@ -83,10 +85,12 @@ base_url += str(args.course.value)
 # Set to 18 holes
 base_url += '&nb_holes=18'
 
-# 2 players
+# Add the amount of players
 base_url += '&affiliation_type_ids='
 
 count = args.count
+
+# This is a weird way to calculate number of players, hopefully this doesn't break/change in the future
 for x in range(count):
     if x != 0 and x != count:
         base_url += ','
@@ -95,19 +99,23 @@ for x in range(count):
 
 print('Going to url: ' + base_url)
 
+# Load the URL in the browser, this should get us half way there
 driver.get(base_url)
 
 print('Selecting earliest tee time...')
 
+# Look for the first element with a tee time rate
+# TODO: Log the tee-time/add barriers for earliest tee-time
 element = driver.find_element(by=By.CLASS_NAME, value='widget-teetime-rate')
-
 element.click()
 
 print('Clicking button to log in...')
 
+# Look for the login button
+# TODO: Improve this to be less generic than fl-button
 driver.find_element(by=By.CLASS_NAME, value='fl-button').click()
 
-# Set the login info
+# Set the login info from args
 login_email = args.u
 login_password = args.p
 
@@ -116,11 +124,12 @@ driver.find_element(by=By.ID, value='sessionPassword').send_keys(login_password)
 
 print('Logging in with provided credentials...')
 
+# Click the login submission button
 driver.find_element(by=By.XPATH, value="//input[@type='submit']").click()
 
 print('Agreeing to terms >:)')
 
-# Check the review terms
+# Check the review terms. Hopefully they allow poorly written bots
 driver\
     .find_element(by=By.TAG_NAME, value='reservation-review-terms')\
     .find_element(by=By.XPATH, value="//input[@type='checkbox']").click()
@@ -131,6 +140,9 @@ if args.checkout:
         .find_element(by=By.TAG_NAME, value='reservation-review-submit-button')\
         .find_element(by=By.XPATH, value="//input[@type='submit']").click()
 else:
+    # Just don't do anything
     print('Skipping checkout...')
 
+# Always exit the browser when complete
+# TODO: Put this whole thing in a try catch so we always close the driver, even on failure
 driver.close()
