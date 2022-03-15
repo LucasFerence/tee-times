@@ -38,6 +38,8 @@ def launch():
     service = Service(ChromeDriverManager().install())
 
     chrome_options = Options()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--headless')
 
     # Initiate the browser
     driver = webdriver.Chrome(service = service, chrome_options=chrome_options)
