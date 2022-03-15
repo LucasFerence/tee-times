@@ -5,7 +5,11 @@ Snags tee times from local MCG courses
 
 `-p` : Password [REQUIRED]
 
+`-course` : Course to play [REQUIRED] Example: `-course NEEDWOOD`
+
 `-count` : Number of players [REQUIRED]
+
+`--checkout` : If present, will fully reserve the tee time
 
 # Crontab scheduling
 
