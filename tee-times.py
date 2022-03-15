@@ -119,11 +119,15 @@ driver.find_element(by=By.XPATH, value="//input[@type='submit']").click()
 print('Agreeing to terms >:)')
 
 # Check the review terms
-driver.find_element(by=By.TAG_NAME, value='reservation-review-terms').find_element(by=By.XPATH, value="//input[@type='checkbox']").click()
+driver\
+    .find_element(by=By.TAG_NAME, value='reservation-review-terms')\
+    .find_element(by=By.XPATH, value="//input[@type='checkbox']").click()
 
 if args.checkout:
     print('Checking out...')
-    driver.find_element(by=By.TAG_NAME, value='reservation-review-submit-button').find_element(by=By.XPATH, value="//input[@type='submit']").click()
+    driver\
+        .find_element(by=By.TAG_NAME, value='reservation-review-submit-button')\
+        .find_element(by=By.XPATH, value="//input[@type='submit']").click()
 else:
     print('Skipping checkout...')
 
