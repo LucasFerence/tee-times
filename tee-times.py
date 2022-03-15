@@ -35,9 +35,10 @@ class Course(Enum):
 def launch():
     service = Service(ChromeDriverManager().install())
 
+    # Comment out/remove these options to load the browser and observe
     chrome_options = Options()
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--headless')
+    #chrome_options.add_argument('--no-sandbox')
+    #chrome_options.add_argument('--headless')
 
     # Initiate the browser
     driver = webdriver.Chrome(service = service, chrome_options=chrome_options)
@@ -57,6 +58,7 @@ def get_args():
     parser.add_argument('-p', type=str, required=True)
     parser.add_argument('-course', type=Course.from_string, choices=list(Course), required=True)
     parser.add_argument('-count', type=int, required=True)
+    parser.add_argument('-adv', type=int, default=7)
 
     # Optional
     parser.add_argument('--checkout', action='store_true')
@@ -72,7 +74,7 @@ base_url = 'https://www.chronogolf.com/club/18159/widget?medium=widget&source=cl
 
 # Set 7 days from now
 base_url += '#?date='
-base_url += str(date.today() + timedelta(days=7))
+base_url += str(date.today() + timedelta(days=args.adv))
 
 # Add the course id
 base_url += '&course_id='

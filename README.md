@@ -9,6 +9,8 @@ Snags tee times from local MCG courses
 
 `-count` : Number of players [REQUIRED]
 
+`-adv` : Days in advance to book (curr day + `adv`). Defaults to 7
+
 `--checkout` : If present, will fully reserve the tee time
 
 # Crontab scheduling
