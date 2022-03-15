@@ -1,5 +1,3 @@
-import time
-
 from datetime import date
 from datetime import timedelta
 
@@ -43,6 +41,9 @@ def launch():
 
     # Initiate the browser
     driver = webdriver.Chrome(service = service, chrome_options=chrome_options)
+
+    # Always wait 5 seconds
+    driver.implicitly_wait(5)
 
     return driver 
 
@@ -93,19 +94,16 @@ for x in range(count):
 print('Going to url: ' + base_url)
 
 driver.get(base_url)
-time.sleep(5)
 
 print('Selecting earliest tee time...')
 
 element = driver.find_element(by=By.CLASS_NAME, value='widget-teetime-rate')
 
 element.click()
-time.sleep(5)
 
 print('Clicking button to log in...')
 
 driver.find_element(by=By.CLASS_NAME, value='fl-button').click()
-time.sleep(5)
 
 # Set the login info
 login_email = args.u
@@ -114,12 +112,9 @@ login_password = args.p
 driver.find_element(by=By.ID, value='sessionEmail').send_keys(login_email)
 driver.find_element(by=By.ID, value='sessionPassword').send_keys(login_password)
 
-time.sleep(5)
-
 print('Logging in with provided credentials...')
 
 driver.find_element(by=By.XPATH, value="//input[@type='submit']").click()
-time.sleep(5)
 
 print('Agreeing to terms >:)')
 
