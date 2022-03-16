@@ -117,8 +117,9 @@ try:
     print('Clicking button to log in...')
 
     # Look for the login button
-    # TODO: Improve this to be less generic than fl-button
-    driver.find_element(by=By.CLASS_NAME, value='fl-button').click()
+    driver\
+        .find_element(by=By.CLASS_NAME, value='widget-step-confirmation')\
+        .find_element(by=By.CLASS_NAME, value='fl-button').click()
 
     # Set the login info from args
     login_email = args.u
