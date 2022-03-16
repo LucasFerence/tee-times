@@ -74,78 +74,80 @@ args = get_args()
 # Launch the browser
 driver = create_browser(args)
 
-# Base url
-base_url = 'https://www.chronogolf.com/club/18159/widget?medium=widget&source=club'
+try:
 
-# Look forward args.adv amount of days
-base_url += '#?date='
-base_url += str(date.today() + timedelta(days=args.adv))
+    # Base url
+    base_url = 'https://www.chronogolf.com/club/18159/widget?medium=widget&source=club'
 
-# Add the course id
-base_url += '&course_id='
-base_url += str(args.course.value)
+    # Look forward args.adv amount of days
+    base_url += '#?date='
+    base_url += str(date.today() + timedelta(days=args.adv))
 
-# Set to 18 holes
-base_url += '&nb_holes=18'
+    # Add the course id
+    base_url += '&course_id='
+    base_url += str(args.course.value)
 
-# Add the amount of players
-base_url += '&affiliation_type_ids='
+    # Set to 18 holes
+    base_url += '&nb_holes=18'
 
-count = args.count
+    # Add the amount of players
+    base_url += '&affiliation_type_ids='
 
-# This is a weird way to calculate number of players, hopefully this doesn't break/change in the future
-for x in range(count):
-    if x != 0 and x != count:
-        base_url += ','
+    count = args.count
 
-    base_url += '85113'
+    # This is a weird way to calculate number of players, hopefully this doesn't break/change in the future
+    for x in range(count):
+        if x != 0 and x != count:
+            base_url += ','
 
-print('Going to url: ' + base_url)
+        base_url += '85113'
 
-# Load the URL in the browser, this should get us half way there
-driver.get(base_url)
+    print('Going to url: ' + base_url)
 
-print('Selecting earliest tee time...')
+    # Load the URL in the browser, this should get us half way there
+    driver.get(base_url)
 
-# Look for the first element with a tee time rate
-# TODO: Log the tee-time/add barriers for earliest tee-time
-element = driver.find_element(by=By.CLASS_NAME, value='widget-teetime-rate')
-element.click()
+    print('Selecting earliest tee time...')
 
-print('Clicking button to log in...')
+    # Look for the first element with a tee time rate
+    # TODO: Log the tee-time/add barriers for earliest tee-time
+    element = driver.find_element(by=By.CLASS_NAME, value='widget-teetime-rate')
+    element.click()
 
-# Look for the login button
-# TODO: Improve this to be less generic than fl-button
-driver.find_element(by=By.CLASS_NAME, value='fl-button').click()
+    print('Clicking button to log in...')
 
-# Set the login info from args
-login_email = args.u
-login_password = args.p
+    # Look for the login button
+    # TODO: Improve this to be less generic than fl-button
+    driver.find_element(by=By.CLASS_NAME, value='fl-button').click()
 
-driver.find_element(by=By.ID, value='sessionEmail').send_keys(login_email)
-driver.find_element(by=By.ID, value='sessionPassword').send_keys(login_password)
+    # Set the login info from args
+    login_email = args.u
+    login_password = args.p
 
-print('Logging in with provided credentials...')
+    driver.find_element(by=By.ID, value='sessionEmail').send_keys(login_email)
+    driver.find_element(by=By.ID, value='sessionPassword').send_keys(login_password)
 
-# Click the login submission button
-driver.find_element(by=By.XPATH, value="//input[@type='submit']").click()
+    print('Logging in with provided credentials...')
 
-print('Agreeing to terms >:)')
+    # Click the login submission button
+    driver.find_element(by=By.XPATH, value="//input[@type='submit']").click()
 
-# Check the review terms. Hopefully they allow poorly written bots
-driver\
-    .find_element(by=By.TAG_NAME, value='reservation-review-terms')\
-    .find_element(by=By.XPATH, value="//input[@type='checkbox']").click()
+    print('Agreeing to terms >:)')
 
-if args.checkout:
-    print('Checking out...')
+    # Check the review terms. Hopefully they allow poorly written bots
     driver\
-        .find_element(by=By.TAG_NAME, value='reservation-review-submit-button')\
-        .find_element(by=By.XPATH, value="//input[@type='submit']").click()
-else:
-    # Just don't do anything
-    print('Skipping checkout...')
+        .find_element(by=By.TAG_NAME, value='reservation-review-terms')\
+        .find_element(by=By.XPATH, value="//input[@type='checkbox']").click()
 
-# Always exit the browser when complete
-# TODO: Put this whole thing in a try catch so we always close the driver, even on failure
-driver.close()
+    if args.checkout:
+        print('Checking out...')
+        driver\
+            .find_element(by=By.TAG_NAME, value='reservation-review-submit-button')\
+            .find_element(by=By.XPATH, value="//input[@type='submit']").click()
+    else:
+        # Just don't do anything
+        print('Skipping checkout...')
+
+finally:
+    # Always exit the browser when complete
+    driver.close()
