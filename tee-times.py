@@ -32,19 +32,21 @@ class Course(Enum):
             raise ValueError()
 
 # Set up browser service
-def launch():
+def create_browser(args):
     service = Service(ChromeDriverManager().install())
 
     # Comment out/remove these options to load the browser and observe
     chrome_options = Options()
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--headless')
+    
+    if args.headless:
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--headless')
 
     # Initiate the browser
     driver = webdriver.Chrome(service = service, chrome_options=chrome_options)
 
-    # Always wait 5 seconds if needed
-    driver.implicitly_wait(5)
+    # Always wait 10 seconds if needed
+    driver.implicitly_wait(10)
 
     return driver 
 
@@ -62,6 +64,7 @@ def get_args():
 
     # Optional
     parser.add_argument('--checkout', action='store_true')
+    parser.add_argument('--headless', action='store_true')
 
     return parser.parse_args()
 
@@ -69,7 +72,7 @@ def get_args():
 args = get_args()
 
 # Launch the browser
-driver = launch()
+driver = create_browser(args)
 
 # Base url
 base_url = 'https://www.chronogolf.com/club/18159/widget?medium=widget&source=club'

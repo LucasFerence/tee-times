@@ -11,7 +11,9 @@ Snags tee times from local MCG courses
 
 `-adv` : Days in advance to book (curr day + `adv`). Defaults to 7
 
-`--checkout` : If present, will fully reserve the tee time
+`--checkout` : If provided, will fully reserve the tee time
+
+`--headless` : If provided, will not render a browser. Useful for running without a display
 
 # Crontab scheduling
 
