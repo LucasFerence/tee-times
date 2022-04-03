@@ -1,4 +1,7 @@
+import sys
+
 from datetime import date
+from datetime import datetime
 from datetime import timedelta
 
 from enum import Enum
@@ -61,6 +64,8 @@ def get_args():
     parser.add_argument('-course', type=Course.from_string, choices=list(Course), required=True)
     parser.add_argument('-count', type=int, required=True)
     parser.add_argument('-adv', type=int, default=7)
+    parser.add_argument('-start', type=str, default='6:30 AM')
+    parser.add_argument('-end', type=str, default='8:00 PM')
 
     # Optional
     parser.add_argument('--checkout', action='store_true')
@@ -79,9 +84,11 @@ try:
     # Base url
     base_url = 'https://www.chronogolf.com/club/18159/widget?medium=widget&source=club'
 
+    date_to_play = str(date.today() + timedelta(days=args.adv))
+
     # Look forward args.adv amount of days
     base_url += '#?date='
-    base_url += str(date.today() + timedelta(days=args.adv))
+    base_url += date_to_play
 
     # Add the course id
     base_url += '&course_id='
@@ -107,12 +114,45 @@ try:
     # Load the URL in the browser, this should get us half way there
     driver.get(base_url)
 
-    print('Selecting earliest tee time...')
+    # Find the widget on the page
+    tee_time_widget = driver.find_element(by=By.CLASS_NAME, value='widget-teetimes')
 
-    # Look for the first element with a tee time rate
-    # TODO: Log the tee-time/add barriers for earliest tee-time
-    element = driver.find_element(by=By.CLASS_NAME, value='widget-teetime-rate')
-    element.click()
+    # Define the format and parse the provided date + times into datetime objects
+    format = '%Y-%m-%d %I:%M %p'
+    dt_to_play_start = datetime.strptime(date_to_play + ' ' + args.start, format)
+    dt_to_play_end = datetime.strptime(date_to_play + ' ' + args.end, format)
+
+    print('Finding a tee time between: ' + str(dt_to_play_start) + ' and ' + str(dt_to_play_end))     
+
+    # Initialize it as none, in-case we don't find anything
+    tee_time = None
+
+    # Go through all of the tee times in the widget
+    for tee_time_element in tee_time_widget.find_elements(by=By.CLASS_NAME, value='widget-teetime'):
+
+        # Get the value of the tee time by the tag. This is the time of the tee time.
+        # The expected format is '8:35 AM'. If that changes this will break and I'll be sad
+        tee_time_value = tee_time_element.find_element(by=By.CLASS_NAME, value='widget-teetime-tag')\
+            .get_attribute('innerHTML')\
+            .strip()
+        
+        # Get the curr date by combining the date and the time we found
+        dt_curr = datetime.strptime(date_to_play + ' ' + tee_time_value, format)
+        
+        # Check if it's within our range. If it is, go ahead and set it as the tee time we are working with
+        if dt_curr >= dt_to_play_start and dt_curr <= dt_to_play_end:
+
+            tee_time = tee_time_element.find_element(by=By.CLASS_NAME, value='widget-teetime-rate')
+            print('Found tee time at ' + str(dt_curr))
+
+            break
+
+    if tee_time != None:
+        tee_time.click()
+    else:
+        # Exit if we don't have anything.
+        print('No tee time determined from provided parameters!')
+        sys.exit()
 
     print('Clicking button to log in...')
 
