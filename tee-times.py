@@ -184,7 +184,7 @@ try:
         print('Checking out...')
         driver\
             .find_element(by=By.TAG_NAME, value='reservation-review-submit-button')\
-            .find_element(by=By.XPATH, value="//input[@type='submit']").click()
+            .find_element(by=By.XPATH, value="//button[@type='submit']").click()
     else:
         # Just don't do anything
         print('Skipping checkout...')
