@@ -39,7 +39,7 @@ Remove all cron jobs: `crontab -r`
 I would recommend adding a log output file so you can track the output of the script.
 Here is an example cron job:
 
-`0 9 * * SAT ~/Scripts/tee-times.sh >> ~/Scripts/logs/tee-times`
+`0 21 * * SAT ~/Scripts/tee-times.sh >> ~/Scripts/logs/tee-times`
 
 # Script
 
