@@ -36,6 +36,11 @@ List crontab: `crontab -l`
 
 Remove all cron jobs: `crontab -r`
 
+I would recommend adding a log output file so you can track the output of the script.
+Here is an example cron job:
+
+`0 21 * * SAT ~/Scripts/tee-times.sh >> ~/Scripts/logs/tee-times`
+
 # Script
 
 To run the script, copy the script from `example-script.sh` into another directory, like `~/Scripts/` for example. Store it in a file called `tee-times.sh`
