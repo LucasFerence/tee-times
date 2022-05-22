@@ -49,7 +49,7 @@ def create_browser(args):
     driver = webdriver.Chrome(service = service, chrome_options=chrome_options)
 
     # Always wait 10 seconds if needed
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(30)
 
     return driver 
 
